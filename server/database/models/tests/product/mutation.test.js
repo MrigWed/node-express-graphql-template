@@ -46,6 +46,42 @@ describe('Product graphQL-server-DB mutation tests', () => {
       });
   });
 
+  const updateProductMut = `
+    mutation {
+      updateProduct (
+        id: 1
+        name: "Updated product"
+        amount: 12
+      ) {
+        id
+        name
+        amount
+        createdAt
+        updatedAt
+        deletedAt
+      }
+    }
+  `;
+
+  it('should have a mutation to update product', async done => {
+    await request(testApp)
+      .post('/graphql')
+      .type('form')
+      .set('Accept', 'application/json')
+      .send({ query: updateProductMut })
+      .then(response => {
+        const result = get(response, 'body.data.updateProduct');
+        expect(result).toEqual(
+          expect.objectContaining({
+            id: 1,
+            name: 'product name',
+            amount: 10
+          })
+        );
+        done();
+      });
+  });
+
   const deleteProductMut = `
   mutation {
     deleteProduct (
